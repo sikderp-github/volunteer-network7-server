@@ -5,16 +5,15 @@ const cors = require('cors');
 const admin = require('firebase-admin');
 require('dotenv').config()
 
-
 const uri = `mongodb+srv://${process.env.DB_USER}:${process.env.DB_PASS}@cluster0.1bnpv.gcp.mongodb.net/${process.env.DB_NAME}?retryWrites=true&w=majority`;
-
+var serviceAccount = require("./volunteer-network7-react-firebase-adminsdk-495o3-222dbb14e2.json");
 
 const app = express();
 app.use(cors());
 app.use(bodyParser.json());
+
 const port = 5000
 
-var serviceAccount = require("./volunteer-network7-react-firebase-adminsdk-495o3-222dbb14e2.json");
 
 admin.initializeApp({
     credential: admin.credential.cert(serviceAccount),
@@ -26,7 +25,6 @@ const client = new MongoClient(uri, { useNewUrlParser: true, useUnifiedTopology:
 client.connect(err => {
     const eventsCollection = client.db("volunteerNetdb").collection("eventTasks");
     const registeredEvents = client.db("volunteerNetdb").collection("registeredEvent")
-    console.log('database connected');
 
     // send data to backend server from client site
     app.post('/registerEvents', (req, res) => {
@@ -86,14 +84,10 @@ client.connect(err => {
             })
     })
 
-
-
-
 });
 
-
 app.get('/', (req, res) => {
-    res.send('Hello World!  I am using mongodb')
+    res.send('Hello World!  Database is loading.')
 })
 
 app.listen(process.env.PORT || port)
