@@ -7,6 +7,7 @@ require('dotenv').config()
 
 const uri = `mongodb+srv://${process.env.DB_USER}:${process.env.DB_PASS}@cluster0.1bnpv.gcp.mongodb.net/${process.env.DB_NAME}?retryWrites=true&w=majority`;
 var serviceAccount = require("./volunteer-network7-react-firebase-adminsdk-495o3-222dbb14e2.json");
+const { ObjectId } = require('mongodb');
 
 const app = express();
 app.use(cors());
@@ -74,6 +75,14 @@ client.connect(err => {
                 });
         }
 
+    })
+
+    app.get('/regEvents', (req, res) => {
+        const email = req.query.email;
+        registeredEvents.find({ email: email })
+            .toArray((err, documents) => {
+                res.send(documents);
+            })
     })
 
     // to cancel events
